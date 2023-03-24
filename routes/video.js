@@ -7,6 +7,7 @@ const uniqid = require("uniqid");
 function readVideos() {
     const videosJSON = fs.readFileSync("./data/videos.json");
     const parsedVideos = JSON.parse(videosJSON);
+    console.log(parsedVideos);
     return parsedVideos;
   }
 
@@ -23,12 +24,12 @@ router.get("/", (_req, _res) => {
   
   // GET endpoint for an invididual video
 router.get("/:videoId", (req, res) => {
-    // Read the file and find the single note whose id matches the requested id
-    const notes = readVideos();
-    const singleNote = videos.find((video) => video.id === req.params.videoId);
+    // Read the file and find the single video whose id matches the requested id
+    const videos = readVideos();
+    const singleVideo = videos.find((video) => video.id === req.params.videoId);
 
       // Respond with the single video
-  res.json(singleNote);
+  res.json(singleVideo);
 });
 
 // POST endpoint to add a video
@@ -37,12 +38,13 @@ router.post("/", (req, res) => {
     const newVideo = {
       id: uniqid(),
       title: req.body.title,
-      content: req.body.content,
+      channel: req.body.channel,
+      image: req.body.image,
     };
 
-    // 1. Read the current notes array
-    // 2. Add to the notes array
-    // 3. Write the entire new notes array to the file
+    // 1. Read the current videos array
+    // 2. Add to the videos array
+    // 3. Write the entire new videos array to the file
     const videos = readVideos();
     videos.push(newVideo);
     fs.writeFileSync("./data/videos.json", JSON.stringify(videos));
