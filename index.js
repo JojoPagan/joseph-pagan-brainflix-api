@@ -18,6 +18,9 @@ app.use(express.json());
 // This middleware allows us to serve static files from a folder.
 app.use(express.static("public"));
 
+
+
+
 // Home route
 app.get('/', (_req, res) => {
   const videosData = JSON.parse(fs.readFileSync('./data/videos.json'));
@@ -81,6 +84,40 @@ app.get('/videos/:id', (req, res) => {
 
   // 3. Respond with that data
   res.json(strippedData);
+});
+
+
+
+
+// POST /videos
+app.post('/videos', (req, res) => {
+  // 1. Read the videos data (and parse it)
+  const videosData = readVideos();
+
+  // 2. Generate a unique id for the new video
+  const id = uniqid();
+
+  // 3. Create a new video object and add it to the videos array
+  const newVideo = {
+    id,
+    title: req.body.title,
+    channel: req.body.channel,
+    image: "/assets/images/Upload-video-preview.jpg", // hard-coded image path
+    description: req.body.description,
+    views: 0,
+    likes: 0,
+    duration: req.body.duration,
+    video: "/path/to/video.mp4", // hard-coded video path
+    timestamp: new Date().getTime(),
+    comments: []
+  };
+  videosData.push(newVideo);
+
+  // 4. Write the updated videos data to the JSON file
+  writeVideos(videosData);
+
+  // 5. Respond with the new video object
+  res.status(201).json(newVideo);
 });
 
 
