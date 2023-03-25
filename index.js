@@ -6,7 +6,7 @@ const uniqid = require('uniqid');
 
 // Configuration
 require('dotenv').config();
-const PORT = process.env.PORT || 9001;
+const PORT = process.env.PORT || 8080;
 
 
 // This middleware implements Cross Origin Resource Sharing (CORS)
@@ -38,7 +38,7 @@ function writeVideos(data) {
   fs.writeFileSync('./data/videos.json', stringifiedData);
 }
 
-// GET /videoas
+// GET /videos
 app.get('/videos', (_req, res) => {
   // 1. Read the videos data (and parse it)
   const videosData = readVideos();
@@ -47,9 +47,37 @@ app.get('/videos', (_req, res) => {
   const strippedData = videosData.map((video) => {
       return {
           id: video.id,
-          title: video.title
+          title: video.title,
+          channel: video.channel,
+          image: video.image,
+          description: video.description,
+          views: video.views,
+          likes: video.likes,
+          duration: video.duration,
+          video: video.video,
+          timestamp: video.timestamp,
+          comments: video.comments
+
       }; 
   });
+
+  // GET /videos/:id
+app.get('/videos/:id', (req, res) => {
+  // 1. Read the videos data (and parse it)
+  const videosData = readVideos();
+
+  // 2. Find the video with the specified ID
+  const video = videosData.find((video) => video.id === req.params.id);
+
+  // 3. Return a 404 error if the video is not found
+  if (!video) {
+    res.status(404).send('Video not found');
+    return;
+  }
+
+  // 4. Respond with the video data
+  res.json(video);
+});
 
   // 3. Respond with that data
   res.json(strippedData);
