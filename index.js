@@ -95,21 +95,29 @@ app.post('/videos', (req, res) => {
   const videosData = readVideos();
 
   // 2. Generate a unique id for the new video
-  const id = uniqid();
+  const newVideoId = uniqid();
 
   // 3. Create a new video object and add it to the videos array
   const newVideo = {
-    id,
-    title: req.body.title,
-    channel: req.body.channel,
-    image: "/assets/images/Upload-video-preview.jpg", // hard-coded image path
-    description: req.body.description,
-    views: 0,
-    likes: 0,
-    duration: req.body.duration,
-    video: "/path/to/video.mp4", // hard-coded video path
+    id: newVideoId,
+    title: req.headers.title,
+    channel: 'Bike Riders',
+    image: "http://localhost:9001/images/Upload-video-preview.jpg",
+    description: req.headers.description,
+    views: 230,
+    likes: 10,
+    duration: "0:45",
+    video: "https://www.youtube.com/watch?v=7OkuyqUU180", 
     timestamp: new Date().getTime(),
-    comments: []
+    comments: [
+      {
+        "id": "a2b4ccd4-af48-46e9-9e62-b96731dad728",
+        "name": "Joseph Pagan",
+        "comment": "Wow! amazing video I want to ride a bike ",
+        "likes": 2,
+        "timestamp": 1620983771000
+      },
+    ],
   };
   videosData.push(newVideo);
 
